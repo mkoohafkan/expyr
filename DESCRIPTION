@@ -1,0 +1,17 @@
+Package: pysockr
+Type: Package
+Title: Socket Interface for Python
+Version: 0.1-1.9000
+Date: 2017-05-16
+Authors@R: c(
+    person("Michael", "Koohafkan", , "michael.koohafkan@gmail.com", role = c("aut", "cre"))
+    )
+Description: A basic interface to Python using sockets. Provides a 
+    basic Python server script and helper functions for writing 
+    commands to and reading results from Python.
+Depends: R (>= 3.3.0)
+Imports: jsonlite (>= 1.4)
+URL: https://github.com/mkoohafkan/pysockr
+BugReports: https://github.com/mkoohafkan/pysockr/issues
+License: GPL (>= 3)
+RoxygenNote: 6.0.1
