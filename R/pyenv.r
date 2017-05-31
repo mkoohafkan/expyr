@@ -5,6 +5,12 @@
 #' @param python.port The port to use for communication.
 #' @param python.path The path to the Python executable.
 #' 
+#' @examples
+#' \dontrun{ 
+#' py_start(6011, "C:/python36/python.exe")
+#' py_start(6011, "C:/python27/python.exe")
+#' }
+#' 
 #' @export
 py_start = function(python.port, python.path) {
   if (missing(python.path))
@@ -64,6 +70,13 @@ py_check = function() {
 #' @param ... Python code to execute.
 #' @return A string containing the result, if any.
 #' 
+#' @examples
+#' \dontrun{ 
+#' py_exec('a = 5')
+#' py_exec('print(a)')
+#' py_exec('print(a + 5)')
+#' }
+#' 
 #' @export
 py_exec = function(...) {
   if (!get("running", envir = pythonenv))
@@ -82,6 +95,12 @@ py_exec = function(...) {
 #' 
 #' @param x The Python variable name.
 #' @return The value of the Python variable.
+#'
+#' @examples
+#' \dontrun{ 
+#' py_exec('a = 5')
+#' py_get('a')
+#' }
 #' 
 #' @importFrom jsonlite fromJSON
 #' @export
@@ -102,7 +121,15 @@ py_get = function(x) {
 #' @param ... A sequence of variables to set. Can be either
 #'   existing variables in the R environment or arbitrary 
 #'   named variables to create.
-#' 
+#'
+#' @examples
+#' \dontrun{ 
+#' py_set(a = 5)
+#' py_set(b = 7, c = "foo")
+#' py_set(d = 1:5)
+#' py_set(d = list(1, 2, 3, 4, 5))
+#' }
+#'  
 #' @importFrom jsonlite toJSON
 #' @export
 py_set = function(...) {
@@ -119,6 +146,11 @@ py_set = function(...) {
 #' Quit Python
 #' 
 #' Shut down the Python server.
+#' 
+#' @examples
+#' \dontrun{ 
+#' py_quit()
+#' }
 #' 
 #' @export
 py_quit = function() {

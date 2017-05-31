@@ -15,3 +15,10 @@ The value of the Python variable.
 \description{
 Retrieve the value of a Python variable.
 }
+\examples{
+\dontrun{ 
+py_exec('a = 5')
+py_get('a')
+}
+
+}

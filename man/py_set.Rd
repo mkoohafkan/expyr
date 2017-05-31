@@ -14,3 +14,12 @@ named variables to create.}
 \description{
 Set a Python variable.
 }
+\examples{
+\dontrun{ 
+py_set(a = 5)
+py_set(b = 7, c = "foo")
+py_set(d = 1:5)
+py_set(d = list(1, 2, 3, 4, 5))
+}
+ 
+}

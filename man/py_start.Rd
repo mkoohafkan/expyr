@@ -14,3 +14,10 @@ py_start(python.port, python.path)
 \description{
 Start the Python Server.
 }
+\examples{
+\dontrun{ 
+py_start(6011, "C:/python36/python.exe")
+py_start(6011, "C:/python27/python.exe")
+}
+
+}

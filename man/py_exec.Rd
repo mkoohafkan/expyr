@@ -15,3 +15,11 @@ A string containing the result, if any.
 \description{
 Execute Python code and return the result.
 }
+\examples{
+\dontrun{ 
+py_exec('a = 5')
+py_exec('print(a)')
+py_exec('print(a + 5)')
+}
+
+}

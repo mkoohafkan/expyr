@@ -9,3 +9,9 @@ py_quit()
 \description{
 Shut down the Python server.
 }
+\examples{
+\dontrun{ 
+py_quit()
+}
+
+}
