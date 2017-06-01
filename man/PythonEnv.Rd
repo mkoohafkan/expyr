@@ -25,19 +25,32 @@ print(py)
 \section{Arguments}{
 
 \code{port} The port to use for communication with Python.
-\code{path} Path to the Python executable to use.
+
+\code{path} The path to the Python executable.
+
 \code{varname} The name of a Python variable to bring into R.
+
 \code{...} Commands to run or named variables to set in the Python process.
 }
 
-\section{Details}{
+\section{Methods}{
 
-\code{$start} starts the Python process. The Python process runs 
+\code{$new} Initialize a Python interface. The Python process is not 
+  started automatically.
+  
+\code{$start} Start the Python process. The Python process runs 
   asynchronously.
 
-\code{$running} checks if the Python process is running.
+\code{$running} Check if the Python process is running.
 
-\code{$stop} Stops the Python process.
+\code{$port} Set or get the port of the Python interface. The port 
+  cannot be changed when the Python process is running.
+
+\code{$pid} Get the Process ID of the Python interface. Useful for
+  diagnosing problems.
+
+\code{$stop} Stop the Python process by sending a request to the 
+  Python process.
 
 \code{$kill} Forcibly terminate the Python process. Useful when
   \code{$stop} fails or hangs.
@@ -49,6 +62,9 @@ print(py)
 \code{$get(varname)} Get a variable from the Python process. Python
   variables are encoded into JSON format, sent to R as text,
   and decoded into variables on the R side.
+  
+\code{$exec(...)} Execute the specified Python commands and invisibly 
+  return printed Python output (if any). 
 
 \code{print(py)} or \code{py$print()} shows some information about the
 Python process on the screen, whether it is running and its process id, 

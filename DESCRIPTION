@@ -6,12 +6,14 @@ Date: 2017-05-16
 Authors@R: c(
     person("Michael", "Koohafkan", , "michael.koohafkan@gmail.com", role = c("aut", "cre"))
     )
-Description: A basic interface to Python using sockets. Provides a 
-    basic Python server script and helper functions for writing 
-    commands to and reading results from Python.
+Description: A basic socket-based interface to Python. Provides a 
+    basic Python server script and a R6 class for interacting with a 
+    Python process.
 Depends: R (>= 3.3.0)
-Imports: jsonlite (>= 1.4),
-   R6 (>= 2.2.0)
+Imports: 
+   R6 (>= 2.2.0),
+   jsonlite (>= 1.4),
+   tools
 URL: https://github.com/mkoohafkan/pysockr
 BugReports: https://github.com/mkoohafkan/pysockr/issues
 License: GPL (>= 3)
