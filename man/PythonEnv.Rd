@@ -72,16 +72,15 @@ etc.
 }
 
 \examples{
-\dontrun{
-py <- PythonEnv$new(port = 6011, path = sys.which("python"))
-p$is_alive()
-p
-p$kill()
-p$is_alive()
-
-p$restart()
-p$is_alive()
-Sys.sleep(3)
-p$is_alive()
+pypath = Sys.which('python') 
+if(nchar(pypath) > 0) {
+  py = PythonEnv$new(port = 6011, path = pypath)
+  py$start
+  py$running
+  py$set(a = 5)
+  py$get('a')
+  py$stop
+} else {
+  message("No Python environment available")
 }
 }
