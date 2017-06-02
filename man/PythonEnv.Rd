@@ -74,7 +74,7 @@ etc.
 \examples{
 pypath = Sys.which('python') 
 if(nchar(pypath) > 0) {
-  py = PythonEnv$new(port = 6011, path = pypath)
+  py = PythonEnv$new(port = 1234, path = pypath)
   py$start
   py$running
   py$set(a = 5)
