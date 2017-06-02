@@ -12,7 +12,7 @@ The Python Environment Class. Provides an interface to a Python process.
 
 py$start
 py$running
-py$exec(...)
+py$exec(..., file = NULL)
 py$set(...)
 py$get(varname)
 py$stop
@@ -31,6 +31,8 @@ print(py)
 \code{varname} The name of a Python variable to bring into R.
 
 \code{...} Commands to run or named variables to set in the Python process.
+
+\code{file} File containing Python code to execute.
 }
 
 \section{Methods}{
@@ -64,7 +66,8 @@ print(py)
   and decoded into variables on the R side.
   
 \code{$exec(...)} Execute the specified Python commands and invisibly 
-  return printed Python output (if any). 
+  return printed Python output (if any). Alternatively, a \code{file} 
+  containing Python code can be supplied.
 
 \code{print(py)} or \code{py$print()} shows some information about the
 Python process on the screen, whether it is running and its process id, 

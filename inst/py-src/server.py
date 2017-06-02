@@ -46,7 +46,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
       # execute command
       with stdoutIO() as execout:
         try:
-          exec(str(data))
+          exec(compile(str(data), "<from R>", "exec"))
         except:
           print("pysockr-error\n" + traceback.format_exc())
       # return results

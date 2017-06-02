@@ -19,7 +19,7 @@ NULL
 #'
 #' py$start
 #' py$running
-#' py$exec(...)
+#' py$exec(..., file = NULL)
 #' py$set(...)
 #' py$get(varname)
 #' py$stop
@@ -37,6 +37,7 @@ NULL
 #' 
 #' \code{...} Commands to run or named variables to set in the Python process.
 #'
+#' \code{file} File containing Python code to execute.
 #' @section Methods:
 #' \code{$new} Initialize a Python interface. The Python process is not 
 #'   started automatically.
@@ -67,7 +68,8 @@ NULL
 #'   and decoded into variables on the R side.
 #'   
 #' \code{$exec(...)} Execute the specified Python commands and invisibly 
-#'   return printed Python output (if any). 
+#'   return printed Python output (if any). Alternatively, a \code{file} 
+#'   containing Python code can be supplied.
 #' 
 #' \code{print(py)} or \code{py$print()} shows some information about the
 #' Python process on the screen, whether it is running and its process id, 
@@ -135,10 +137,13 @@ PythonEnv = R6::R6Class("PythonEnv", cloneable = FALSE,
         self$stop
     },
     
-    exec = function(...) {
+    exec = function(..., file = NULL) {
       if (!self$running)
         stop("The Python process is not running", call. = FALSE)
-      code = paste(list(...), collapse = ";")
+      if(!is.null(file))
+        code = normalizePath(file, mustWork = TRUE)
+      else
+        code = paste(list(...), collapse = "\n")
       s = private$socket()
       on.exit(close(s))
       writeLines(code, s)
