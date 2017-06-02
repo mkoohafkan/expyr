@@ -48,7 +48,7 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         try:
           exec(str(data))
         except:
-          print(traceback.format_exc())
+          print("pysockr-error\n" + traceback.format_exc())
       # return results
       result = execout.getvalue()
       print ("sending: " + str(result))

@@ -143,16 +143,18 @@ PythonEnv = R6::R6Class("PythonEnv", cloneable = FALSE,
       on.exit(close(s))
       writeLines(code, s)
       res = readLines(s, warn = FALSE)
+      if(length(res) > 0)
+        if(res[1] == "pysockr-error")
+          stop("Python returned an error\n",
+            paste(tail(res, -1), collapse = "\n"), call. = FALSE)
       invisible(res)
     },
     
     get = function(varname) {
       if (!self$running)
         stop("The Python process is not running", call. = FALSE)
-      s = private$socket()
-      on.exit(close(s))
-      writeLines(sprintf("print(json.dumps(%s))", varname), s)
-      jsonlite::fromJSON(readLines(s, warn = FALSE))
+      msg = sprintf("print(json.dumps(%s))", varname)
+      jsonlite::fromJSON(self$exec(msg))
     },
     
     set = function(...) {
@@ -231,4 +233,3 @@ PythonEnv = R6::R6Class("PythonEnv", cloneable = FALSE,
     }
   )
 )
-
