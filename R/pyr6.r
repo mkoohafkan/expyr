@@ -67,11 +67,11 @@ NULL
 #'   variables are encoded into JSON format, sent to R as text,
 #'   and decoded into variables on the R side.
 #'   
-#' \code{$exec(...)} Execute the specified Python commands and invisibly 
-#'   return printed Python output (if any). Alternatively, a \code{file} 
-#'   containing Python code can be supplied.
+#' \code{$exec(...)} Execute the specified Python 
+#'   commands and invisibly return printed Python output (if any).
+#'   Alternatively, a \code{file} containing Python code can be supplied.
 #' 
-#' \code{print(py)} or \code{py$print()} shows some information about the
+#' \code{print(py)} Show some information about the
 #' Python process on the screen, whether it is running and its process id, 
 #' etc.
 #'
