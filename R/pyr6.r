@@ -121,15 +121,14 @@ PythonEnv = R6::R6Class("PythonEnv", cloneable = FALSE,
       private$currentpath = path
       private$currenthost = host
       private$currentport = as.integer(port)
-      private$version = "version unknown"
+      private$version = "(version unknown)"
       if (port < 1024L)
         warning("Using port numbers below 1024 is not recommended")
       private$isrunning = FALSE
       # socket helper
       private$socket = function() {
-        socketConnection(port = self$port, 
-                         open = 'r+', blocking = TRUE, server = FALSE, 
-                         encoding = "UTF-8")
+        socketConnection(port = self$port, open = 'r+', 
+          blocking = TRUE, server = FALSE, encoding = "UTF-8")
       }
       invisible(self)
     },
@@ -205,10 +204,9 @@ PythonEnv = R6::R6Class("PythonEnv", cloneable = FALSE,
       if (self$running)
         stop("Cannot update the path while the Python process is running",
              call. = FALSE)
-      private$currentpath= value
+      private$currentpath = value
     },
-    
-            
+
     pid = function() {
       private$currentpid
     },
