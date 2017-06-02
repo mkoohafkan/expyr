@@ -9,7 +9,7 @@ try:
 except ImportError:
   import StringIO as io
 
-script, port = sys.argv
+script, port, host = sys.argv
 
 
 @contextlib.contextmanager
@@ -21,7 +21,7 @@ def stdoutIO(stdout = None):
     yield stdout
     sys.stdout = old
 
-host = 'localhost'
+host = str(host)
 port = int(port)
 
 with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:

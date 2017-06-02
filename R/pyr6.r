@@ -80,7 +80,7 @@ NULL
 #' @examples
 #' pypath = Sys.which('python') 
 #' if(nchar(pypath) > 0) {
-#'   py = PythonEnv$new(port = 1234, path = pypath)
+#'   py = PythonEnv$new(path = pypath, port = 6011, host = "0.0.0.0")
 #'   py$start
 #'   py$running
 #'   py$set(a = 5)
@@ -96,7 +96,8 @@ PythonEnv = R6::R6Class("PythonEnv", cloneable = FALSE,
   private = list(
     currentpid = NULL,
     currentport = NULL,
-    path = NULL,
+    currentpath = NULL,
+    currenthost = NULL,
     version = NULL,
     isrunning = NULL,
     socket = NULL
@@ -104,20 +105,21 @@ PythonEnv = R6::R6Class("PythonEnv", cloneable = FALSE,
   public = list(
     print = function(...) {
       cat("Python ", private$version, "\n", sep = "")
-      cat("(", private$path, ")\n", sep = "")
+      cat("(", self$path, ")\n", sep = "")
       if (self$running)
-        cat("Listening on Port ", self$port, " (Process ID: ", self$pid,  ")\n",
-          sep = "")
+        cat("Listening on ", self$host, ":", self$port, 
+          " (Process ID: ", self$pid,  ")\n", sep = "")
       else
         cat("Process not running")
     },
     
-    initialize = function(port, path) {
+    initialize = function(path, port, host = "localhost") {
       if (is.na(as.integer(port)))
         stop("Invalid port specified", call. = FALSE)
       if (!file.exists(path))
         stop("Invalid path specified", call. = FALSE)
-      private$path = path
+      private$currentpath = path
+      private$currenthost = host
       private$currentport = as.integer(port)
       private$version = "version unknown"
       if (port < 1024L)
@@ -187,7 +189,26 @@ PythonEnv = R6::R6Class("PythonEnv", cloneable = FALSE,
           call. = FALSE)
       private$currentport = as.integer(value)
     },
+
+    host = function(value) {
+      if (missing(value))
+        return(private$currenthost)
+      if (self$running)
+        stop("Cannot update the host while the Python process is running",
+             call. = FALSE)
+      private$currenthost = value
+    },
     
+    path = function(value) {
+      if (missing(value))
+        return(private$currentpath)
+      if (self$running)
+        stop("Cannot update the path while the Python process is running",
+             call. = FALSE)
+      private$currentpath= value
+    },
+    
+            
     pid = function() {
       private$currentpid
     },
@@ -197,7 +218,8 @@ PythonEnv = R6::R6Class("PythonEnv", cloneable = FALSE,
         message("The Python process is already running")
       } else {
         fpath = system.file("py-src/server.py", package = "pysockr") 
-        system2(private$path, args = c(shQuote(fpath), self$port), wait = FALSE)
+        system2(private$currentpath, wait = FALSE, 
+                args = c(shQuote(fpath), self$port, self$host))
         # check if it's running
         s = private$socket()
         on.exit(close(s))
