@@ -3,7 +3,7 @@ r:
   - release
   - devel
 cache: packages
-sudo: false
+sudo: required
 
 matrix:
   include:
