@@ -80,7 +80,7 @@ NULL
 #' @examples
 #' pypath = Sys.which('python') 
 #' if(nchar(pypath) > 0) {
-#'   py = PythonEnv$new(path = pypath, port = 6011, host = "127.0.0.1")
+#'   py = PythonEnv$new(path = pypath, port = 6011, host = "0.0.0.0")
 #'   py$start
 #'   py$running
 #'   py$set(a = 5)
