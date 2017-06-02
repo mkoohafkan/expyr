@@ -75,15 +75,13 @@ etc.
 }
 
 \examples{
+\dontrun{
 pypath = Sys.which('python') 
-if(nchar(pypath) > 0) {
-  py = PythonEnv$new(path = pypath, port = 6011)
-  py$start
-  py$running
-  py$set(a = 5)
-  py$get('a')
-  py$stop
-} else {
-  message("No Python environment available")
+py = PythonEnv$new(path = pypath, port = 6011)
+py$start
+py$running
+py$set(a = 5)
+py$get('a')
+py$stop
 }
 }
