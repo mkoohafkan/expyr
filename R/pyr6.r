@@ -80,7 +80,7 @@ NULL
 #' @examples
 #' pypath = Sys.which('python') 
 #' if(nchar(pypath) > 0) {
-#'   py = PythonEnv$new(path = pypath, port = 6011, host = "0.0.0.0")
+#'   py = PythonEnv$new(path = pypath, port = 6011, host = "127.0.0.1")
 #'   py$start
 #'   py$running
 #'   py$set(a = 5)
@@ -127,8 +127,9 @@ PythonEnv = R6::R6Class("PythonEnv", cloneable = FALSE,
       private$isrunning = FALSE
       # socket helper
       private$socket = function() {
-        socketConnection(port = self$port, open = 'r+', 
-          blocking = TRUE, server = FALSE, encoding = "UTF-8")
+        socketConnection(host = self$host, port = self$port, 
+          open = 'r+', blocking = TRUE, server = FALSE, 
+          encoding = "UTF-8")
       }
       invisible(self)
     },
