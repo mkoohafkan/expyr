@@ -98,7 +98,11 @@ PythonEnv = R6::R6Class("PythonEnv", cloneable = FALSE,
     currenthost = NULL,
     version = NULL,
     isrunning = NULL,
-    socket = NULL
+    socket = function() {
+      socketConnection(host = self$host, port = self$port, 
+        open = 'r+', blocking = TRUE, server = FALSE, 
+        encoding = "UTF-8")
+    }
   ),
   public = list(
     print = function(...) {
@@ -123,12 +127,6 @@ PythonEnv = R6::R6Class("PythonEnv", cloneable = FALSE,
       if (port < 1024L)
         warning("Using port numbers below 1024 is not recommended")
       private$isrunning = FALSE
-      # socket helper
-      private$socket = function() {
-        socketConnection(host = self$host, port = self$port, 
-          open = 'r+', blocking = TRUE, server = FALSE, 
-          encoding = "UTF-8")
-      }
       invisible(self)
     },
     
@@ -167,9 +165,7 @@ PythonEnv = R6::R6Class("PythonEnv", cloneable = FALSE,
         stop("The Python process is not running", call. = FALSE)
       dots = list(...)
       jdots = jsonlite::toJSON(dots)
-      s = private$socket()
-      on.exit(close(s))
-      writeLines(sprintf("locals().update(%s)", jdots), s)
+      self$exec(sprintf("locals().update(%s)", jdots))
     }
   ),
   
