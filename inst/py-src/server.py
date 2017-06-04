@@ -21,10 +21,10 @@ def stdoutIO(stdout = None):
     yield stdout
     sys.stdout = old
 
-host = str(host)
+host = socket.gethostbyname(str(host))
 port = int(port)
 
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+with contextlib.closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as s:
   # initialize server
   s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
   s.bind((host,port))
