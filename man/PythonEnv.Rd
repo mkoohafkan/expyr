@@ -50,6 +50,9 @@ print(py)
 
 \code{$pid} Get the Process ID of the Python interface. Useful for
   diagnosing problems.
+  
+\code{$timeout} Set or get the timeout for receiving messages from
+  Python. Default is 60 seconds.
 
 \code{$stop} Stop the Python process by sending a request to the 
   Python process.
@@ -75,13 +78,14 @@ etc.
 }
 
 \examples{
-\dontrun{
-pypath = Sys.which('python') 
-py = PythonEnv$new(path = pypath, port = 6011)
-py$start
-py$running
-py$set(a = 5)
-py$get('a')
-py$stop
-}
+pypath = Sys.which('python')
+if(nchar(pypath) > 0) { 
+  py = PythonEnv$new(path = pypath, port = 6011)
+  py$start
+  py$running
+  py$set(a = 5)
+  py$get('a')
+  py$stop
+} else 
+message("No Python distribution found!")
 }
