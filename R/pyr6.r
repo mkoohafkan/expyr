@@ -17,13 +17,20 @@ NULL
 #' @section Usage:
 #' \preformatted{py = PythonEnv$new(port, path)
 #'
-#' py$start
+#' py$start()
+#' 
 #' py$running
+#' py$pid
+#' py$path (py$path <-)
+#' py$host (py$host <-)
+#' py$port (py$port <-)
+#' py$timeout (py$timeout <-)
+#' 
 #' py$exec(..., file = NULL)
 #' py$set(...)
 #' py$get(varname)
-#' py$stop
-#' py$kill
+#' 
+#' py$stop(force = FALSE)
 #' 
 #' print(py)
 #' }
@@ -38,57 +45,67 @@ NULL
 #' \code{...} Commands to run or named variables to set in the Python process.
 #'
 #' \code{file} File containing Python code to execute.
+#' 
+#' \code{force} If \code{TRUE}, force the Python process to terminate
+#'   using a sytem call.
+#' 
 #' @section Methods:
-#' \code{$new} Initialize a Python interface. The Python process is not 
+#' \code{$new()} Initialize a Python interface. The Python process is not 
 #'   started automatically.
 #'   
-#' \code{$start} Start the Python process. The Python process runs 
-#'   asynchronously.
-#'
-#' \code{$running} Check if the Python process is running.
-#' 
+#' \code{$path} Set or get the path to the Python executable. The path 
+#'   cannot be changed while the Python process is running.
+#'   
+#' \code{$host} Set or get the host address of the Python connection.
+#'   Default is \code{'localhost'}. The host cannot be changed while the 
+#'   Python process is running.
+#'   
 #' \code{$port} Set or get the port of the Python interface. The port 
-#'   cannot be changed when the Python process is running.
-#'
-#' \code{$pid} Get the Process ID of the Python interface. Useful for
-#'   diagnosing problems.
+#'   cannot be changed while the Python process is running.
 #'   
 #' \code{$timeout} Set or get the timeout for receiving messages from
 #'   Python. Default is 60 seconds.
 #'
-#' \code{$stop} Stop the Python process by sending a request to the 
-#'   Python process.
-#' 
-#' \code{$kill} Forcibly terminate the Python process. Useful when
-#'   \code{$stop} fails or hangs.
+#' \code{$start()} Start the Python process. The Python process runs 
+#'   asynchronously.
 #'
-#' \code{$set(...)} Set variables in the Python process. R variables
+#' \code{$running} Check if the Python process is running.
+#' 
+#' \code{$pid} Get the Process ID of the Python interface. Useful for
+#'   diagnosing problems.
+#'
+#' \code{$set()} Set variables in the Python process. R variables
 #'   are encoded into JSON format, sent to the Python process as text,
 #'   and decoded into variables on the Python side.
 #'
-#' \code{$get(varname)} Get a variable from the Python process. Python
+#' \code{$get()} Get a variable from the Python process. Python
 #'   variables are encoded into JSON format, sent to R as text,
 #'   and decoded into variables on the R side.
 #'   
-#' \code{$exec(...)} Execute the specified Python 
+#' \code{$exec()} Execute the specified Python 
 #'   commands and invisibly return printed Python output (if any).
-#'   Alternatively, a \code{file} containing Python code can be supplied.
+#'   Alternatively, the \code{file} argument can be used to specify
+#'   a file containing Python code. Note that there will be no return 
+#'   value unless an explicit Python \code{print} statement is executed.
+#' 
+#' \code{$stop()} Stop the Python process by sending a request to the 
+#'   Python process. If \code{force = TRUE}, the process will be 
+#'   terminated using a system call instead.
 #' 
 #' \code{print(py)} Show some information about the
 #' Python process on the screen, whether it is running and its process id, 
 #' etc.
 #'
-#' @importFrom R6 R6Class
 #' @name PythonEnv
 #' @examples
 #' pypath = Sys.which('python')
 #' if(nchar(pypath) > 0) { 
 #'   py = PythonEnv$new(path = pypath, port = 6011)
-#'   py$start
+#'   py$start()
 #'   py$running
 #'   py$set(a = 5)
 #'   py$get('a')
-#'   py$stop
+#'   py$stop(force = TRUE)
 #' } else 
 #' message("No Python distribution found!")
 NULL
@@ -138,9 +155,50 @@ PythonEnv = R6::R6Class("PythonEnv", cloneable = FALSE,
     
     finalize = function() {
       if (self$running)
-        self$stop
+        self$stop(force = TRUE)
     },
     
+    start = function() {
+      if (self$running) {
+        message("The Python process is already running")
+      } else {
+        fpath = system.file("py-src/server.py", package = "pysockr") 
+        system2(private$currentpath, wait = FALSE, 
+                args = c(shQuote(fpath), self$port, self$host))
+        # check if it's running
+        s = private$socket()
+        on.exit(close(s))
+        writeLines('print("RUNNING")', s)
+        res = readLines(s, warn = FALSE)
+        if (length(res) < 1L)
+          stop("Connection to Python could not be established", call. = FALSE)
+        else
+          private$isrunning = TRUE
+        # get pid
+        private$currentpid = as.integer(self$exec('print(os.getpid())'))
+        # get version
+        private$version = self$exec('print(sys.version)')
+      }
+      self
+    },
+    
+    stop = function(force = FALSE) {
+      if (!self$running) {
+        message("The Python process is not running")
+      } else if (force) {
+        tools::pskill(self$pid)
+        message("Python process ", self$pid, " was terminated", sep = "")
+        private$isrunning = FALSE
+      } else {
+        res = self$exec("quit")
+        if (res != "QUIT")
+          stop("The Python process could not be shut down normally")
+        private$isrunning = FALSE
+        message("Python process ", self$pid, " was terminated", sep = "")
+      }
+      invisible(self)
+    },
+
     exec = function(..., file = NULL) {
       if (!self$running)
         stop("The Python process is not running", call. = FALSE)
@@ -216,52 +274,6 @@ PythonEnv = R6::R6Class("PythonEnv", cloneable = FALSE,
       if (missing(value))
         return(private$currenttimeout)
       private$currenttimeout = value
-    },
-    
-    start = function() {
-      if (self$running) {
-        message("The Python process is already running")
-      } else {
-        fpath = system.file("py-src/server.py", package = "pysockr") 
-        system2(private$currentpath, wait = FALSE, 
-                args = c(shQuote(fpath), self$port, self$host))
-        # check if it's running
-        s = private$socket()
-        on.exit(close(s))
-        writeLines('print("RUNNING")', s)
-        res = readLines(s, warn = FALSE)
-        if (length(res) < 1L)
-          stop("Connection to Python could not be established", call. = FALSE)
-        else
-          private$isrunning = TRUE
-        # get pid
-        private$currentpid = as.integer(self$exec('print(os.getpid())'))
-        # get version
-        private$version = self$exec('print(sys.version)')
-      }
-      self
-    },
-    
-    stop = function() {
-      if (!self$running) {
-        message("The Python process is not running")
-      } else {
-        s = private$socket()
-        on.exit(close(s))
-        writeLines("quit", s)
-        res = readLines(s, warn = FALSE)
-        if (res != "QUIT")
-          stop("The Python process could not be shut down normally")
-        private$isrunning = FALSE
-        message("Python process ", self$pid, " was terminated", sep = "")
-      }
-      self
-    },
-    kill = function() {
-      tools::pskill(self$pid)
-      message("Python process ", self$pid, " was terminated", sep = "")
-      private$isrunning = FALSE
-      self
     }
   )
 )
