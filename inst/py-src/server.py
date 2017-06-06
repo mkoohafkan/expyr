@@ -1,15 +1,17 @@
+from __future__ import print_function
 import socket
 import sys
 import os
 import contextlib
 import traceback
 import json
-try:
-  import io
-except ImportError:
+if sys.version_info[0] < 3:
   import StringIO as io
+else:
+  import io
 
-script, port, host = sys.argv
+
+script, PORT, HOST = sys.argv
 
 
 @contextlib.contextmanager
@@ -21,26 +23,26 @@ def stdoutIO(stdout = None):
     yield stdout
     sys.stdout = old
 
-host = socket.gethostbyname(str(host))
-port = int(port)
+HOST = socket.gethostbyname(str(HOST))
+PORT = int(PORT)
 
-with contextlib.closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as s:
+with contextlib.closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as SERVER:
   # initialize server
-  s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-  s.bind((host,port))
-  s.listen(1)
+  SERVER.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+  SERVER.bind((HOST, PORT))
+  SERVER.listen(1)
   print("server is listening")
   while True:
     # accept a connection
     try:
-      conn, _ = s.accept()
+      CONN, _ = SERVER.accept()
       print("new connection")
       # read incoming command
-      data = conn.recv(1024).decode(encoding = 'UTF-8')
+      data = CONN.recv(1024).decode(encoding = 'UTF-8')
       # quit if requested
       if "quit" in data:
         result = "QUIT"
-        conn.sendall(result.encode(encoding = 'UTF-8'))
+        CONN.sendall(result.encode(encoding = 'UTF-8'))
         break
       print ("from connected  user: " + str(data))
       # execute command
@@ -52,11 +54,11 @@ with contextlib.closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as s:
       # return results
       result = execout.getvalue()
       print ("sending: " + str(result))
-      conn.sendall(str(result).encode(encoding = 'UTF-8'))
+      CONN.sendall(str(result).encode(encoding = 'UTF-8'))
     finally:
       # close the conenction
       print("closing connection")
-      conn.shutdown(2)
-      conn.close()
+      CONN.shutdown(2)
+      CONN.close()
 
 print("shutting down server")
