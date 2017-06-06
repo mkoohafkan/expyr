@@ -228,6 +228,8 @@ PythonEnv = R6::R6Class("PythonEnv", cloneable = FALSE,
       if (!self$running)
         stop("The Python process is not running", call. = FALSE)
       dots = list(...)
+      if (!all(grepl("^[_a-zA-Z][0-9a-zA-Z]*$", names(dots))))
+        stop("Invalid Python variable name")
       jdots = jsonlite::toJSON(dots)
       self$exec(sprintf("locals().update(%s)", jdots))
     }
