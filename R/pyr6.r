@@ -138,17 +138,11 @@ PythonEnv = R6::R6Class("PythonEnv", cloneable = FALSE,
     },
     
     initialize = function(path, port, host = "localhost") {
-      if (is.na(as.integer(port)))
-        stop("Invalid port specified", call. = FALSE)
-      if (!file.exists(path))
-        stop("Invalid path specified", call. = FALSE)
-      private$currentpath = path
-      private$currenthost = host
+      private$currentpath = as.character(path)
+      private$currenthost = as.character(host)
       private$currenttimeout = 60
       private$currentport = as.integer(port)
       private$version = "(version unknown)"
-      if (port < 1024L)
-        warning("Using port numbers below 1024 is not recommended")
       private$isrunning = FALSE
       invisible(self)
     },
@@ -161,24 +155,32 @@ PythonEnv = R6::R6Class("PythonEnv", cloneable = FALSE,
     start = function() {
       if (self$running) {
         message("The Python process is already running")
-      } else {
-        fpath = system.file("py-src/server.py", package = "pysockr") 
-        system2(private$currentpath, wait = FALSE, 
-                args = c(shQuote(fpath), self$port, self$host))
-        # check if it's running
-        s = private$socket()
-        on.exit(close(s))
-        writeLines('print("RUNNING")', s)
-        res = readLines(s, warn = FALSE)
-        if (length(res) < 1L)
-          stop("Connection to Python could not be established", call. = FALSE)
-        else
-          private$isrunning = TRUE
-        # get pid
-        private$currentpid = as.integer(self$exec('print(os.getpid())'))
-        # get version
-        private$version = self$exec('print(sys.version)')
+        return(invisible(self))
       }
+      if (is.na(self$port) || length(self$port) == 0L) {
+        stop("Invalid port specified", call. = FALSE)
+      } else if (self$port < 1024L) {
+        warning("Using port numbers below 1024 is not recommended")
+      }
+      if (!file.exists(self$path)) {
+        stop("Invalid path specified", call. = FALSE)
+      }
+      fpath = system.file("py-src/run_server.py", package = "pysockr") 
+      system2(self$path, wait = FALSE, 
+              args = c(shQuote(fpath), self$port, self$host))
+      # check if it's running
+      s = private$socket()
+      on.exit(close(s))
+      writeLines('print("RUNNING")', s)
+      res = readLines(s, warn = FALSE)
+      if (length(res) < 1L)
+        stop("Connection to Python could not be established", call. = FALSE)
+      else
+        private$isrunning = TRUE
+      # get pid
+      private$currentpid = as.integer(self$exec('print(OS.getpid())'))
+      # get version
+      private$version = self$exec('print(SYS.version)')
       self
     },
     
@@ -203,7 +205,8 @@ PythonEnv = R6::R6Class("PythonEnv", cloneable = FALSE,
       if (!self$running)
         stop("The Python process is not running", call. = FALSE)
       if(!is.null(file))
-        code = normalizePath(file, mustWork = TRUE)
+        code = paste(readLines(normalizePath(file, mustWork = TRUE)),
+          collapse = "\n")
       else
         code = paste(list(...), collapse = "\n")
       s = private$socket()
@@ -220,8 +223,8 @@ PythonEnv = R6::R6Class("PythonEnv", cloneable = FALSE,
     get = function(varname) {
       if (!self$running)
         stop("The Python process is not running", call. = FALSE)
-      msg = sprintf("print(json.dumps(%s))", varname)
-      jsonlite::fromJSON(self$exec(msg))
+      msg = sprintf("print(PYSOCKR_JSON_DUMPS(%s))", varname)
+      rjson::fromJSON(self$exec(msg))
     },
     
     set = function(...) {
@@ -230,7 +233,7 @@ PythonEnv = R6::R6Class("PythonEnv", cloneable = FALSE,
       dots = list(...)
       if (!all(grepl("^[_a-zA-Z][0-9a-zA-Z]*$", names(dots))))
         stop("Invalid Python variable name")
-      jdots = jsonlite::toJSON(dots)
+      jdots = rjson::toJSON(dots)
       self$exec(sprintf("locals().update(%s)", jdots))
     }
   ),

@@ -8,12 +8,12 @@ sudo: false
 matrix:
   include:
     - python:3.6
+    - python:2.7
 
 # Be strict when checking our package
 warnings_are_errors: true
 
 # System dependencies for HTTP calling
 r_binary_packages:
- - jsonlite
+ - rjson
  - R6
-
