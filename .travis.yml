@@ -3,7 +3,7 @@ r:
   - release
   - devel
 cache: packages
-sudo: required
+sudo: false
 
 # Be strict when checking our package
 warnings_are_errors: true
@@ -12,6 +12,3 @@ warnings_are_errors: true
 r_binary_packages:
   - rjson
   - R6
-
-before_install:
-  - python --version

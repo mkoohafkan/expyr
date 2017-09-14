@@ -99,7 +99,16 @@ NULL
 #' @name PythonEnv
 #' @examples
 #' pypath = Sys.which('python')
-#' print(pypath)
+#' cat(pypath, "\n")
+#' if(nchar(pypath) > 0) { 
+#'   py = PythonEnv$new(path = pypath, port = 6011)
+#'   py$start()
+#'   py$running
+#'   py$set(a = 5)
+#'   py$get('a')
+#'   py$stop(force = TRUE)
+#' } else 
+#' message("No Python distribution found!")
 NULL
 
 #' @export
