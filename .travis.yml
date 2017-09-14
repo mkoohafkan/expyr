@@ -10,8 +10,8 @@ warnings_are_errors: true
 
 # System dependencies for HTTP calling
 r_binary_packages:
-   - rjson
-   - R6
+  - rjson
+  - R6
 
  before_install:
-   - python --version
+  - python --version
