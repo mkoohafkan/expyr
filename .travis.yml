@@ -5,11 +5,6 @@ r:
 cache: packages
 sudo: false
 
-matrix:
-  include:
-    - python:3.6
-    - python:2.7
-
 # Be strict when checking our package
 warnings_are_errors: true
 
@@ -17,3 +12,6 @@ warnings_are_errors: true
 r_binary_packages:
  - rjson
  - R6
+
+ before_install:
+ - python --version
