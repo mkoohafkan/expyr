@@ -99,8 +99,9 @@ NULL
 #' @name PythonEnv
 #' @examples
 #' pypath = Sys.which('python')
-#' cat(pypath, "\n")
 #' if(nchar(pypath) > 0) { 
+#'   if(Sys.info()["sysname"] != "Windows")
+#'     pypath = "python"
 #'   py = PythonEnv$new(path = pypath, port = 6011)
 #'   py$start()
 #'   py$running
