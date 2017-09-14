@@ -12,3 +12,7 @@ warnings_are_errors: true
 r_binary_packages:
   - rjson
   - R6
+
+before_install:
+  - pip install contextlib
+  - pip install functools
