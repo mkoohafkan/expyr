@@ -164,9 +164,8 @@ PythonEnv = R6::R6Class("PythonEnv", cloneable = FALSE,
       } else if (self$port < 1024L) {
         warning("Using port numbers below 1024 is not recommended")
       }
-      if (!file.exists(self$path)) {
+      if(system2(self$path, args = "--version") != 0L)
         stop("Invalid path specified", call. = FALSE)
-      }
       fpath = system.file("py-src/pysockr.py", package = "pysockr") 
       system2(self$path, wait = FALSE, 
               args = c(shQuote(fpath), self$port, self$host))
