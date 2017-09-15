@@ -102,7 +102,7 @@ NULL
 #' if(nchar(pypath) > 0) { 
 #'   if(Sys.info()["sysname"] != "Windows")
 #'     pypath = "python"
-#'   py = PythonEnv$new(path = pypath, port = 6011)
+#'   py = PythonEnv$new(path = pypath, port = 6011, host = "127.0.0.1")
 #'   py$start()
 #'   py$running
 #'   py$set(a = 5)
@@ -164,7 +164,7 @@ PythonEnv = R6::R6Class("PythonEnv", cloneable = FALSE,
       } else if (self$port < 1024L) {
         warning("Using port numbers below 1024 is not recommended")
       }
-      if(system2(self$path, args = "--version") != 0L)
+      if(system2(self$path, args = "--version", stdout = FALSE) != 0L)
         stop("Invalid path specified", call. = FALSE)
       fpath = system.file("py-src/pysockr.py", package = "pysockr") 
       system2(self$path, wait = FALSE, 
