@@ -164,15 +164,10 @@ PythonEnv = R6::R6Class("PythonEnv", cloneable = FALSE,
       } else if (self$port < 1024L) {
         warning("Using port numbers below 1024 is not recommended")
       }
-      tryCatch(
-        system2(self$path, args = "--version", stdout = TRUE),
-        error = function(e)
-          stop("Invalid path specified", call. = FALSE)
-      )
-#      if (!file.exists(self$path)) {
-#        stop("Invalid path specified", call. = FALSE)
-#      }
-      fpath = system.file("py-src/run_server.py", package = "pysockr") 
+      if (!file.exists(self$path)) {
+        stop("Invalid path specified", call. = FALSE)
+      }
+      fpath = system.file("py-src/pysockr.py", package = "pysockr") 
       system2(self$path, wait = FALSE, 
               args = c(shQuote(fpath), self$port, self$host))
       # check if it's running

@@ -28,7 +28,7 @@ def PYSOCKR_JSON_DUMPS(obj):
 def PYSOCKR_JSON_LOADS(obj):
   return(JSON.loads(obj))
 
-def server(HOST, PORT):
+def pysockr_server(HOST, PORT):
   """Run the pysockr server"""
   HOST = SOCKET.gethostbyname(str(HOST))
   PORT = int(PORT)
@@ -69,3 +69,7 @@ def server(HOST, PORT):
         CONN.close()
   
   print("shutting down server")
+
+if __name__ == "__main__":
+  script, port, host = SYS.argv
+  pysockr_server(host, port)
