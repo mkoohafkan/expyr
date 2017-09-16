@@ -5,11 +5,12 @@ import os as OS
 import contextlib as CONTEXTLIB
 import traceback as TRACEBACK
 import json as JSON
-import functools as FUNCTOOLS
 if SYS.version_info[0] < 3:
   import StringIO as IO
+  import singledispatch as FUNCTOOLS
 else:
   import io as IO
+  import functools as FUNCTOOLS
 
 @CONTEXTLIB.contextmanager
 def stdoutIO(stdout = None):
