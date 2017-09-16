@@ -2,8 +2,7 @@ language: r
 r:
   - release
   - devel
-cache: packages
-sudo: false
+sudo: required
 
 # Be strict when checking our package
 warnings_are_errors: true
@@ -12,3 +11,6 @@ warnings_are_errors: true
 r_binary_packages:
   - rjson
   - R6
+
+before_install:
+  - sudo apt-get install python-singledispatch
