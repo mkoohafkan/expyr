@@ -1,13 +1,13 @@
-Package: pysockr
+Package: expyr
 Type: Package
-Title: Socket Interface for Python
+Title: Execute Python commands from R
 Version: 0.1-1.9000
 Date: 2017-05-16
 Authors@R: c(
     person("Michael", "Koohafkan", , "michael.koohafkan@gmail.com", role = c("aut", "cre"))
     )
 Description: A basic socket-based interface to Python. Provides a 
-    basic Python server script and a R6 class for interacting with a 
+    Python server script and a R6 class for interacting with a 
     Python process.
 Depends: R (>= 3.3.0)
 Imports: 
@@ -15,9 +15,10 @@ Imports:
    rjson (>= 0.2),
    tools
 SystemRequirements:
-    Python (>= 2.7)
-URL: https://github.com/mkoohafkan/pysockr
-BugReports: https://github.com/mkoohafkan/pysockr/issues
+    Python (>= 3.4) OR
+	Python (>= 2.7) + module 'singledispatch'
+URL: https://github.com/mkoohafkan/expyr
+BugReports: https://github.com/mkoohafkan/expyr/issues
 License: GPL (>= 3)
 RoxygenNote: 6.0.1
 Roxygen: list(markdown = TRUE)
