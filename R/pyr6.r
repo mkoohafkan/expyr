@@ -4,8 +4,8 @@
 #' Python server script and R6 class for interacting with a
 #' Python process.
 
-#' @name pysockr-package
-#' @aliases pysockr
+#' @name expyr-package
+#' @aliases expyr
 #' @docType package
 NULL
 
@@ -166,7 +166,7 @@ PythonEnv = R6::R6Class("PythonEnv", cloneable = FALSE,
       }
       if(system2(self$path, args = "--version", stdout = FALSE) != 0L)
         stop("Invalid path specified", call. = FALSE)
-      fpath = system.file("py-src/pysockr.py", package = "pysockr") 
+      fpath = system.file("py-src/expyr.py", package = "expyr") 
       system2(self$path, wait = FALSE, 
               args = c(shQuote(fpath), self$port, self$host))
       # check if it's running
@@ -215,7 +215,7 @@ PythonEnv = R6::R6Class("PythonEnv", cloneable = FALSE,
       writeLines(code, s)
       res = readLines(s, warn = FALSE)
       if(length(res) > 0)
-        if(res[1] == "pysockr-error")
+        if(res[1] == "expyr-error")
           stop("Python returned an error\n",
             paste(tail(res, -1), collapse = "\n"), call. = FALSE)
       invisible(res)
@@ -224,7 +224,7 @@ PythonEnv = R6::R6Class("PythonEnv", cloneable = FALSE,
     get = function(varname) {
       if (!self$running)
         stop("The Python process is not running", call. = FALSE)
-      msg = sprintf("print(PYSOCKR_JSON_DUMPS(%s))", varname)
+      msg = sprintf("print(EXPYR_JSON_DUMPS(%s))", varname)
       rjson::fromJSON(self$exec(msg))
     },
     

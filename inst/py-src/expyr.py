@@ -24,15 +24,15 @@ def stdoutIO(stdout = None):
   SYS.stdout = old
 
 @FUNCTOOLS.singledispatch
-def PYSOCKR_JSON_DUMPS(obj):
+def EXPYR_JSON_DUMPS(obj):
   return(JSON.dumps(obj))
 
 @FUNCTOOLS.singledispatch
-def PYSOCKR_JSON_LOADS(obj):
+def EXPYR_JSON_LOADS(obj):
   return(JSON.loads(obj))
 
-def pysockr_server(HOST, PORT):
-  """Run the pysockr server"""
+def expyr_server(HOST, PORT):
+  """Run the expyr server"""
   HOST = SOCKET.gethostbyname(str(HOST))
   PORT = int(PORT)
   
@@ -60,7 +60,7 @@ def pysockr_server(HOST, PORT):
           try:
             exec(compile(str(data), "<from R>", "exec"))
           except:
-            print("pysockr-error\n" + TRACEBACK.format_exc())
+            print("expyr-error\n" + TRACEBACK.format_exc())
         # return results
         result = execout.getvalue()
         print ("sending: " + str(result))
@@ -75,4 +75,4 @@ def pysockr_server(HOST, PORT):
 
 if __name__ == "__main__":
   script, port, host = SYS.argv
-  pysockr_server(host, port)
+  expyr_server(host, port)
