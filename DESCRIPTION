@@ -15,7 +15,6 @@ Imports:
     rjson (>= 0.2),
     tools
 Suggests:
-    transpyr,
 	knitr
 SystemRequirements:
     Python (>= 3.4) OR
