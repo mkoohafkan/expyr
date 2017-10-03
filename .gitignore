@@ -3,3 +3,4 @@
 .RData
 .Ruserdata
 inst/py-src/__pycache__
+.vs
