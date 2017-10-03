@@ -1,9 +1,9 @@
 ---
 author: "Michael Koohafkan"
-title: "Getting Started"
+title: "Getting Started with expyr"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Quick Start} 
+  %\VignetteIndexEntry{Getting Started} 
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -113,7 +113,7 @@ py$set(a = 5)        # equivalent
 
 You can use `get` to retrieve variables too:
 
-```{r}
+```{r eval = FALSE}
 py$get('a')
 ```
 
