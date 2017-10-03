@@ -1,0 +1,125 @@
+---
+author: "Michael Koohafkan"
+title: "Getting Started"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Quick Start} 
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+This document provides a brief introduction to the R package **expyr** 
+(**ex**ecute **Py**thon commands from **R**). The package provides the R6 class
+`PythonEnv` which provides a bridge between R and a Python server. It is primarily
+designed to work with local Python installations, but remote connections are possible.
+
+## Prerequisites
+
+**expyr** can work with Python 2.x and 3.x. If you are using Python 3.4 or higher,
+everything should work out of the box. If you are using Python 2 or an earlier
+version of Python 3, you will need to install the `singledispatch` module as well. 
+If you are using Python version 2.7.9 or higher, you can install `singledispatch` 
+with `pip` from the command line with 
+
+```
+python -m pip install singledispatch`
+```
+
+If you are using an earlier version of Python, you'll have to 
+[install `pip`](http://pip.readthedocs.io/en/latest/installing/) first.
+The easiest way to do this on a Windows machine is to put `get-pip.py` in 
+the same directory as `python.exe` and run this command from that  directory:
+
+```
+python get-pip.py
+```
+
+Then you can install `singledispatch` using `pip`.
+
+## The Python Server
+
+A Python server is provided as a single script (`pysockr.py`) and a couple of 
+extensions (discussed in the companion vignette "Extending expyr").
+
+```{r eval = FALSE}
+# View the Python server script
+file.show("py-src/pysockr.py", package = "expyr")
+```
+
+## The PythonEnv Class
+
+The *PythonEnv* class provides an interface to the Python server via socket 
+connections and a JSON protocol for transferring variables to/from Python. Each 
+instance of the *PythonEnv* class is tied to a unique Python server and 
+communicate with independent Python processes. Use the `new()` method to create 
+a *PythonEnv* object.
+
+```{r eval = FALSE}
+pypath = Sys.which('python')
+host = 'localhost'
+port = 6011
+
+py = PythonEnv$new(pypath, port, host)
+```
+
+Each *PythonEnv* object has a number of bindings that provide information on the
+Python environment settings. Most of these bindings can only be changed when the
+Python server is stopped.
+
+```{r eval = FALSE}
+py$running    # Check if the Python server is running
+py$pid        # the process id of the Python server
+py$host       # get/set the hostname of the Python server
+py$port       # get/set the port number used for communication with the Python server
+py$timeout    # get/set the timeout period for listening to the Python server
+```
+
+## Interacting with Python 
+
+Before executing Python commands, you must start the Python server using the 
+`start()` method. 
+
+```{r eval = FALSE}
+py$start()
+```
+
+To execute Python code, use the `exec` method:
+
+```{r eval = FALSE}
+py$exec("5 + 5")
+```
+
+`exec` won't return a value without an explicit `print` statement on the Python
+side, and will invisibly retrieve results in R. It can be a little clumsy to
+print Python results to the R console:
+
+```{r eval = FALSE}
+print(py$exec("print(5 + 5)"))
+```
+
+A better option is to use `get`:
+
+```{r eval = FALSE}
+py$get("5 + 5")
+```
+
+You can assign variables in Python either by executing an assignment statement
+with `exec` or by using the `set` command:
+
+```{r eval = FALSE}
+py$exec("a = 5")
+py$set(a = 5)        # equivalent
+```
+
+You can use `get` to retrieve variables too:
+
+```{r}
+py$get('a')
+```
+
+To shut down the Python server and close the Python process, 
+use the `stop()` method. 
+
+```{r eval = FALSE}
+py$stop()
+```
