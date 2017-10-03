@@ -98,18 +98,15 @@ NULL
 #'
 #' @name PythonEnv
 #' @examples
+#' \dontrun{
 #' pypath = Sys.which('python')
-#' if(nchar(pypath) > 0) { 
-#'   if(Sys.info()["sysname"] != "Windows")
-#'     pypath = "python"
-#'   py = PythonEnv$new(path = pypath, port = 6011, host = "127.0.0.1")
-#'   py$start()
-#'   py$running
-#'   py$set(a = 5)
-#'   py$get('a')
-#'   py$stop(force = TRUE)
-#' } else 
-#' message("No Python distribution found!")
+#' py = PythonEnv$new(path = pypath, port = 6011, host = "127.0.0.1")
+#' py$start()
+#' py$running
+#' py$set(a = 5)
+#' py$get('a')
+#' py$stop(force = TRUE)
+#' }
 NULL
 
 #' @export
