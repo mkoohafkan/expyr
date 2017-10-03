@@ -2,15 +2,17 @@ language: r
 r:
   - release
   - devel
-sudo: required
+sudo: false
+cache: packages
 
 # Be strict when checking our package
 warnings_are_errors: true
 
 # System dependencies for HTTP calling
-r_binary_packages:
+r_packages:
   - rjson
   - R6
+  - knitr
 
 before_install:
   - sudo apt-get install python-singledispatch
