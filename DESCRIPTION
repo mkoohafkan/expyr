@@ -1,7 +1,7 @@
 Package: expyr
 Type: Package
 Title: Execute Python commands from R
-Version: 0.1-1.9000
+Version: 0.5-1
 Date: 2017-05-16
 Authors@R: c(
     person("Michael", "Koohafkan", , "michael.koohafkan@gmail.com", role = c("aut", "cre"))
@@ -11,14 +11,18 @@ Description: A basic socket-based interface to Python. Provides a
     Python process.
 Depends: R (>= 3.3.0)
 Imports: 
-   R6 (>= 2.2.0),
-   rjson (>= 0.2),
-   tools
+    R6 (>= 2.2.0),
+    rjson (>= 0.2),
+    tools
+Suggests:
+    transpyr,
+	knitr
 SystemRequirements:
     Python (>= 3.4) OR
 	Python (>= 2.7) + module 'singledispatch'
 URL: https://github.com/mkoohafkan/expyr
 BugReports: https://github.com/mkoohafkan/expyr/issues
+VignetteBuilder: knitr
 License: GPL (>= 3)
 RoxygenNote: 6.0.1
 Roxygen: list(markdown = TRUE)
