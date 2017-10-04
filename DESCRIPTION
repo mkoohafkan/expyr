@@ -1,7 +1,7 @@
 Package: expyr
 Type: Package
-Title: Execute Python commands from R
-Version: 0.5-1
+Title: Execute Python Commands From R
+Version: 0.5-0
 Date: 2017-05-16
 Authors@R: c(
     person("Michael", "Koohafkan", , "michael.koohafkan@gmail.com", role = c("aut", "cre"))
