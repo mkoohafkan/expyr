@@ -47,7 +47,7 @@ NULL
 #' \code{file} File containing Python code to execute.
 #' 
 #' \code{force} If \code{TRUE}, force the Python process to terminate
-#'   using a sytem call.
+#'   using a system call.
 #' 
 #' @section Methods:
 #' \code{$new()} Initialize a Python interface. The Python process is not 
@@ -232,7 +232,7 @@ PythonEnv = R6::R6Class("PythonEnv", cloneable = FALSE,
       if (!all(grepl("^[_a-zA-Z][0-9a-zA-Z]*$", names(dots))))
         stop("Invalid Python variable name")
       jdots = rjson::toJSON(dots)
-      self$exec(sprintf("locals().update(%s)", jdots))
+      self$exec(sprintf("globals().update(%s)", jdots))
     }
   ),
   
