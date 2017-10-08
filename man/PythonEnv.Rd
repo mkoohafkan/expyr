@@ -42,7 +42,7 @@ print(py)
 \code{file} File containing Python code to execute.
 
 \code{force} If \code{TRUE}, force the Python process to terminate
-using a sytem call.
+using a system call.
 }
 
 \section{Methods}{
