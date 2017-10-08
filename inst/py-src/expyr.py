@@ -9,7 +9,7 @@ if float('.'.join(str(i) for i in SYS.version_info[0:2])) < 3.4:
   import singledispatch as FUNCTOOLS
 else:
   import functools as FUNCTOOLS
-if float('.'.join(str(i) for i in SYS.version_info[0:2])) < 3.6:
+if float('.'.join(str(i) for i in SYS.version_info[0:2])) < 3.0:
   import StringIO as IO
 else:
   import io as IO
