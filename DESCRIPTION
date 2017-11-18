@@ -1,14 +1,17 @@
 Package: expyr
 Type: Package
-Title: Execute Python Commands From R
+Title: Execute Python from R
 Version: 0.5-0
 Date: 2017-10-07
 Authors@R: c(
     person("Michael", "Koohafkan", , "michael.koohafkan@gmail.com", role = c("aut", "cre"))
     )
-Description: A basic socket-based interface to Python. Provides a 
-    Python server script and a R6 class for interacting with a 
-    Python process.
+Description:  high-level interface to any Python environment, including 
+    ad-hoc environments such as Anaconda Python and virtual environments. 
+	Communication between R and Python is achieved using websockets, meaning that 
+	no low-level C interface or makevars configuration is required. Data structures
+	are translated between R and Python using JSON, and Python class templates for
+	extending JSON support to arbitrary Python objects are provided.
 Depends: R (>= 3.3.0)
 Imports: 
     R6 (>= 2.2.0),
