@@ -66,7 +66,7 @@ def expyr_server(HOST, PORT):
         print ("sending: " + str(result))
         CONN.sendall(str(result).encode(encoding = 'UTF-8'))
       finally:
-        # close the conenction
+        # close the connection
         print("closing connection")
         CONN.shutdown(2)
         CONN.close()
